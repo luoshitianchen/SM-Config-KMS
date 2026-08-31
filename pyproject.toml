@@ -1,0 +1,16 @@
+[project]
+name = "SM-Config-KMS"
+version = "2.0.0"
+description = "密钥管理与加密服务（KMS）：密钥生命周期、信封加密、轮换与吊销"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 200
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
