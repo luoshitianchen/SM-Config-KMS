@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 from app import base
 
 SERVICE = "sm-config-kms"
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 NAME = "SM Config KMS"
 DESCRIPTION = "密钥管理与加密服务（KMS）：密钥生命周期、信封加密、轮换与吊销"
 PORT = 8400
@@ -108,7 +108,8 @@ def _row_to_dict(row: Any) -> dict[str, Any]:
 
 
 @app.get("/api/kms/keys")
-def list_keys() -> dict[str, Any]:
+def list_keys(request: Request) -> dict[str, Any]:
+    base.require_internal_token(request)
     with base.db_ctx() as conn:
         rows = conn.execute("SELECT * FROM keys ORDER BY created_at DESC").fetchall()
     return {"items": [_row_to_dict(r) for r in rows], "total": len(rows)}
@@ -135,7 +136,8 @@ def create_key(payload: KeyIn, request: Request) -> dict[str, Any]:
 
 
 @app.get("/api/kms/keys/{key_id}")
-def get_key(key_id: str) -> dict[str, Any]:
+def get_key(key_id: str, request: Request) -> dict[str, Any]:
+    base.require_internal_token(request)
     with base.db_ctx() as conn:
         row = conn.execute("SELECT * FROM keys WHERE id=?", (key_id,)).fetchone()
     if not row:
@@ -202,6 +204,7 @@ def delete_key(key_id: str, request: Request) -> dict[str, Any]:
 
 @app.post("/api/kms/keys/{key_id}/encrypt")
 def encrypt_value(key_id: str, payload: CryptoIn, request: Request) -> dict[str, Any]:
+    base.require_internal_token(request)
     with base.db_ctx() as conn:
         row = conn.execute("SELECT * FROM keys WHERE id=?", (key_id,)).fetchone()
     if not row:
@@ -212,6 +215,7 @@ def encrypt_value(key_id: str, payload: CryptoIn, request: Request) -> dict[str,
 
 @app.post("/api/kms/keys/{key_id}/decrypt")
 def decrypt_value(key_id: str, payload: CryptoIn, request: Request) -> dict[str, Any]:
+    base.require_internal_token(request)
     with base.db_ctx() as conn:
         row = conn.execute("SELECT * FROM keys WHERE id=?", (key_id,)).fetchone()
     if not row:
