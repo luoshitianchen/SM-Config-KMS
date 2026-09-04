@@ -82,3 +82,14 @@ def test_crypto_base_endpoints(client):
 def test_write_requires_auth(client):
     del client.headers["X-Internal-Token"]
     assert client.post("/api/kms/keys", json={"name": "x"}).status_code == 401
+
+
+def test_kms_crypto_and_list_require_auth(client):
+    key_id = _create(client)
+    enc = client.post(f"/api/kms/keys/{key_id}/encrypt", json={"value": "secret"}).json()["ciphertext"]
+    del client.headers["X-Internal-Token"]
+    # 无令牌：密钥列表、密钥详情、加密、解密一律 fail-closed
+    assert client.get("/api/kms/keys").status_code in (401, 403)
+    assert client.get(f"/api/kms/keys/{key_id}").status_code in (401, 403)
+    assert client.post(f"/api/kms/keys/{key_id}/encrypt", json={"value": "x"}).status_code in (401, 403)
+    assert client.post(f"/api/kms/keys/{key_id}/decrypt", json={"value": enc}).status_code in (401, 403)
