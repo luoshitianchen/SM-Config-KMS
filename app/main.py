@@ -1,3 +1,8 @@
+"""SM Config KMS —— 密钥管理与加密服务：密钥生命周期、信封加密、轮换与吊销。
+
+数据密钥通过主密钥（SM4_KEY_HEX）信封加密后落库，密钥明文不落盘。
+"""
+
 from __future__ import annotations
 
 import secrets
@@ -11,7 +16,7 @@ from pydantic import BaseModel, Field
 from app import base
 
 SERVICE = "sm-config-kms"
-VERSION = "2.0.1"
+VERSION = "3.0.0"
 NAME = "SM Config KMS"
 DESCRIPTION = "密钥管理与加密服务（KMS）：密钥生命周期、信封加密、轮换与吊销"
 PORT = 8400
