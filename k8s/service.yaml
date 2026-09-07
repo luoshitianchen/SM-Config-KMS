@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sm-config-kms
+  namespace: sm
+  labels:
+    app: sm-config-kms
+    platform: sm-suite
+spec:
+  type: ClusterIP
+  selector:
+    app: sm-config-kms
+  ports:
+  - name: http
+    port: 8400
+    targetPort: http
+    protocol: TCP
