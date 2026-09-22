@@ -1,0 +1,20 @@
+# Chaos Mesh 实验：随机杀死 sm-config-kms 一个 Pod，验证 HPA 自愈与可用性
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: sm-config-kms-pod-kill
+  namespace: sm-prod
+  labels:
+    app.kubernetes.io/part-of: sm-platform
+    chaos/scope: resiliency
+spec:
+  action: pod-kill
+  mode: one
+  selector:
+    namespaces:
+      - sm-prod
+    labelSelectors:
+      app.kubernetes.io/name: sm-config-kms
+  scheduler:
+    cron: "@weekly"
+  duration: "30s"

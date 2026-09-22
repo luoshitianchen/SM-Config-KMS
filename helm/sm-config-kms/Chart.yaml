@@ -1,0 +1,12 @@
+apiVersion: v2
+name: sm-config-kms
+description: SM 微服务 Helm Chart - SM-Config-KMS（配置与密钥管理服务）
+type: application
+version: 1.0.0
+appVersion: "2.1.0"
+keywords:
+  - sm-microservices
+  - enterprise
+  - sm-config-kms
+maintainers:
+  - name: sm-platform-team
